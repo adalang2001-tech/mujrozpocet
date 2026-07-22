@@ -97,20 +97,9 @@
               <input type="hidden" id="type" value="expense">
             </div>
             <div>
-              <label for="category" class="block text-sm font-medium text-slate-700 mb-1">Kategorie</label>
-              <select id="category" required
-                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white">
-                <option value="Jídlo">Jídlo</option>
-                <option value="Bydlení">Bydlení</option>
-                <option value="Zábava">Zábava</option>
-                <option value="Doprava">Doprava</option>
-                <option value="Zdraví">Zdraví</option>
-                <option value="Oblečení">Oblečení</option>
-                <option value="Vzdělání">Vzdělání</option>
-                <option value="Plat">Plat</option>
-                <option value="Investice">Investice</option>
-                <option value="Ostatní">Ostatní</option>
-              </select>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Kategorie</label>
+              <div id="category-buttons" class="grid grid-cols-2 gap-2"></div>
+              <input type="hidden" id="category" value="Plat">
             </div>
             <div>
               <label for="date" class="block text-sm font-medium text-slate-700 mb-1">Datum</label>
@@ -283,7 +272,8 @@
     const amountInput = document.getElementById('amount');
     const typeSelect = document.getElementById('type');
     const typeButtons = document.querySelectorAll('.type-button');
-    const categorySelect = document.getElementById('category');
+    const categoryInput = document.getElementById('category');
+    const categoryButtonsContainer = document.getElementById('category-buttons');
     const dateInput = document.getElementById('date');
     const noteInput = document.getElementById('note');
     const transactionsBody = document.getElementById('transactions-body');
@@ -292,6 +282,11 @@
     const exportBtn = document.getElementById('export-btn');
     const importInput = document.getElementById('import-input');
 
+    const CATEGORY_OPTIONS = {
+      income: ['Plat', 'Ostatní'],
+      expense: ['Jídlo', 'Bydlení', 'Zábava', 'Doprava', 'Zdraví', 'Oblečení', 'Vzdělání', 'Investice', 'Ostatní'],
+    };
+
     function setTransactionType(type) {
       typeSelect.value = type;
       typeButtons.forEach(btn => {
@@ -299,6 +294,36 @@
         btn.className = isActive
           ? 'type-button flex-1 rounded-lg border border-transparent bg-rose-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500'
           : 'type-button flex-1 rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
+      });
+      renderCategoryButtons(type);
+    }
+
+    function renderCategoryButtons(type) {
+      const categories = CATEGORY_OPTIONS[type] || CATEGORY_OPTIONS.expense;
+      const selectedCategory = categories.includes(categoryInput.value) ? categoryInput.value : categories[0];
+      categoryInput.value = selectedCategory;
+      categoryButtonsContainer.innerHTML = '';
+
+      for (const category of categories) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = category;
+        button.dataset.category = category;
+        button.className = category === selectedCategory
+          ? 'category-button rounded-lg border border-transparent bg-primary-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500'
+          : 'category-button rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
+        button.addEventListener('click', () => setCategory(category));
+        categoryButtonsContainer.appendChild(button);
+      }
+    }
+
+    function setCategory(category) {
+      categoryInput.value = category;
+      categoryButtonsContainer.querySelectorAll('.category-button').forEach(btn => {
+        const isActive = btn.dataset.category === category;
+        btn.className = isActive
+          ? 'category-button rounded-lg border border-transparent bg-primary-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500'
+          : 'category-button rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
       });
     }
 
@@ -784,7 +809,7 @@
       const amount = parseFloat(amountInput.value);
       if (!amount || amount <= 0) { alert('Zadejte platnou kladnou částku.'); return; }
       addTransaction({
-        amount, type: typeSelect.value, category: categorySelect.value,
+        amount, type: typeSelect.value, category: categoryInput.value,
         date: dateInput.value, note: noteInput.value,
       });
       amountInput.value = '';
