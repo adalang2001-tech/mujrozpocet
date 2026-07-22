@@ -208,13 +208,35 @@
       <!-- Pravý sloupec -->
       <div class="lg:col-span-3 space-y-6">
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-4">Výdaje podle kategorií</h2>
-          <div class="relative h-64 flex items-center justify-center">
-            <canvas id="expense-chart"></canvas>
-            <p id="chart-empty" class="absolute text-sm text-slate-400 hidden">Zatím žádné výdaje k zobrazení</p>
+          <h2 class="text-lg font-semibold text-slate-900 mb-4">Měsíční přehled</h2>
+          <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-slate-50 text-left text-slate-500 uppercase text-xs tracking-wide">
+                    <th class="px-6 py-3 font-medium">Měsíc</th>
+                    <th class="px-6 py-3 font-medium text-right">Příjmy</th>
+                    <th class="px-6 py-3 font-medium text-right">Výdaje</th>
+                    <th class="px-6 py-3 font-medium text-right">Bilance</th>
+                  </tr>
+                </thead>
+                <tbody id="monthly-summary-body"></tbody>
+              </table>
+              <p id="monthly-summary-empty" class="px-6 py-10 text-center text-slate-400 text-sm">Zatím žádné transakce k zobrazení</p>
+            </div>
+            <div class="space-y-4">
+              <div class="bg-slate-50 rounded-2xl h-56 p-4">
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">Bilance příjmů a výdajů</h3>
+                <canvas id="monthly-balance-chart" class="w-full h-full"></canvas>
+              </div>
+              <div class="bg-slate-50 rounded-2xl h-56 p-4">
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">Podíl kategorií</h3>
+                <canvas id="monthly-category-chart" class="w-full h-full"></canvas>
+              </div>
+            </div>
           </div>
         </section>
-
+ 
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-slate-900">Historie transakcí</h2>
@@ -263,6 +285,8 @@
 
     let transactions = [];
     let chartInstance = null;
+    let monthlyBalanceChart = null;
+    let monthlyCategoryChart = null;
     let msalInstance = null;
     let syncTimer = null;
     let isSyncing = false;
@@ -279,6 +303,10 @@
     const transactionsBody = document.getElementById('transactions-body');
     const tableEmpty = document.getElementById('table-empty');
     const chartEmpty = document.getElementById('chart-empty');
+    const monthlySummaryBody = document.getElementById('monthly-summary-body');
+    const monthlySummaryEmpty = document.getElementById('monthly-summary-empty');
+    const monthlyBalanceChartEl = document.getElementById('monthly-balance-chart');
+    const monthlyCategoryChartEl = document.getElementById('monthly-category-chart');
     const exportBtn = document.getElementById('export-btn');
     const importInput = document.getElementById('import-input');
 
@@ -324,6 +352,123 @@
         btn.className = isActive
           ? 'category-button rounded-lg border border-transparent bg-primary-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500'
           : 'category-button rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
+      });
+    }
+
+    function getMonthlySummary() {
+      const map = {};
+      for (const t of transactions) {
+        const monthKey = t.date.slice(0, 7);
+        if (!map[monthKey]) {
+          map[monthKey] = { monthKey, income: 0, expense: 0 };
+        }
+        if (t.type === 'income') map[monthKey].income += t.amount;
+        else map[monthKey].expense += t.amount;
+      }
+      return Object.values(map).sort((a, b) => b.monthKey.localeCompare(a.monthKey));
+    }
+
+    function formatMonthLabel(monthKey) {
+      const [year, month] = monthKey.split('-');
+      return new Date(year, Number(month) - 1).toLocaleDateString('cs-CZ', { month: 'long', year: 'numeric' });
+    }
+
+    function renderMonthlySummary() {
+      const summary = getMonthlySummary();
+      monthlySummaryBody.innerHTML = '';
+      monthlySummaryEmpty.classList.toggle('hidden', summary.length > 0);
+
+      if (summary.length === 0) {
+        return;
+      }
+
+      for (const row of summary) {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t border-slate-100 hover:bg-slate-50 transition-colors';
+        const balance = row.income - row.expense;
+        tr.innerHTML = `
+          <td class="px-6 py-3.5 whitespace-nowrap text-slate-700">${formatMonthLabel(row.monthKey)}</td>
+          <td class="px-6 py-3.5 text-right text-emerald-600 font-medium">${formatCurrency(row.income)}</td>
+          <td class="px-6 py-3.5 text-right text-rose-600 font-medium">${formatCurrency(row.expense)}</td>
+          <td class="px-6 py-3.5 text-right font-medium ${balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${balance >= 0 ? '+' : '−'}${formatCurrency(Math.abs(balance))}</td>
+        `;
+        monthlySummaryBody.appendChild(tr);
+      }
+    }
+
+    function renderMonthlyCharts() {
+      const summary = getMonthlySummary();
+      const totals = summary.reduce((acc, row) => {
+        acc.income += row.income;
+        acc.expense += row.expense;
+        return acc;
+      }, { income: 0, expense: 0 });
+      const categoryData = getExpenseByCategory();
+      const categories = Object.keys(categoryData);
+
+      if (monthlyBalanceChart) {
+        monthlyBalanceChart.destroy();
+        monthlyBalanceChart = null;
+      }
+      if (monthlyCategoryChart) {
+        monthlyCategoryChart.destroy();
+        monthlyCategoryChart = null;
+      }
+
+      if (summary.length === 0) {
+        return;
+      }
+
+      monthlyBalanceChart = new Chart(monthlyBalanceChartEl.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Příjmy', 'Výdaje'],
+          datasets: [{
+            data: [totals.income, totals.expense],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            borderColor: '#ffffff',
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  return `${ctx.label}: ${formatCurrency(ctx.raw)}`;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      monthlyCategoryChart = new Chart(monthlyCategoryChartEl.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: categories,
+          datasets: [{
+            data: categories.map(c => categoryData[c]),
+            backgroundColor: categories.map(c => CATEGORY_COLORS[c] || '#94a3b8'),
+            borderColor: '#ffffff',
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  return `${ctx.label}: ${formatCurrency(ctx.raw)}`;
+                },
+              },
+            },
+          },
+        },
       });
     }
 
@@ -739,6 +884,8 @@
       updateSummaryCards();
       renderTable();
       renderChart();
+      renderMonthlySummary();
+      renderMonthlyCharts();
     }
 
     function exportData() {
