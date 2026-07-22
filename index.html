@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Můj rozpočet</title>
+  <title>MĹŻj rozpoÄŤet</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
@@ -32,10 +32,10 @@
     <div class="max-w-6xl mx-auto px-4 py-5">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center text-white font-bold text-lg">₿</div>
+          <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center text-white font-bold text-lg">â‚ż</div>
           <div>
-            <h1 class="text-2xl font-bold text-slate-900">Můj rozpočet</h1>
-            <p class="text-sm text-slate-500">Osobní správa financí</p>
+            <h1 class="text-2xl font-bold text-slate-900">MĹŻj rozpoÄŤet</h1>
+            <p class="text-sm text-slate-500">OsobnĂ­ sprĂˇva financĂ­</p>
           </div>
         </div>
         <div id="sync-status-badge" class="hidden items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border">
@@ -48,36 +48,36 @@
 
   <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
-    <!-- Souhrnné kartičky -->
+    <!-- SouhrnnĂ© kartiÄŤky -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Celkový zůstatek</p>
-        <p id="total-balance" class="text-3xl font-bold text-slate-900">0 Kč</p>
-        <p class="text-xs text-slate-400 mt-2">Všechny transakce</p>
+        <p class="text-sm font-medium text-slate-500 mb-1">CelkovĂ˝ zĹŻstatek</p>
+        <p id="total-balance" class="text-3xl font-bold text-slate-900">0 KÄŤ</p>
+        <p class="text-xs text-slate-400 mt-2">VĹˇechny transakce</p>
       </div>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Příjmy tento měsíc</p>
-        <p id="monthly-income" class="text-3xl font-bold text-emerald-600">0 Kč</p>
+        <p class="text-sm font-medium text-slate-500 mb-1">PĹ™Ă­jmy tento mÄ›sĂ­c</p>
+        <p id="monthly-income" class="text-3xl font-bold text-emerald-600">0 KÄŤ</p>
         <p id="month-label-income" class="text-xs text-slate-400 mt-2"></p>
       </div>
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Výdaje tento měsíc</p>
-        <p id="monthly-expense" class="text-3xl font-bold text-rose-600">0 Kč</p>
+        <p class="text-sm font-medium text-slate-500 mb-1">VĂ˝daje tento mÄ›sĂ­c</p>
+        <p id="monthly-expense" class="text-3xl font-bold text-rose-600">0 KÄŤ</p>
         <p id="month-label-expense" class="text-xs text-slate-400 mt-2"></p>
       </div>
     </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-      <!-- Levý sloupec -->
+      <!-- LevĂ˝ sloupec -->
       <div class="lg:col-span-2 space-y-6">
 
-        <!-- Formulář -->
+        <!-- FormulĂˇĹ™ -->
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-5">Nová transakce</h2>
+          <h2 class="text-lg font-semibold text-slate-900 mb-5">NovĂˇ transakce</h2>
           <form id="transaction-form" class="space-y-4">
             <div>
-              <label for="amount" class="block text-sm font-medium text-slate-700 mb-1">Částka (Kč)</label>
+              <label for="amount" class="block text-sm font-medium text-slate-700 mb-1">ÄŚĂˇstka (KÄŤ)</label>
               <input type="number" id="amount" min="0.01" step="0.01" required
                 placeholder="0,00"
                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
@@ -87,11 +87,11 @@
               <div class="flex gap-2" role="group" aria-label="Typ transakce">
                 <button type="button" id="type-expense" data-type="expense"
                   class="type-button flex-1 rounded-lg border border-transparent bg-rose-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500">
-                  Výdaj
+                  VĂ˝daj
                 </button>
                 <button type="button" id="type-income" data-type="income"
                   class="type-button flex-1 rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100">
-                  Příjem
+                  PĹ™Ă­jem
                 </button>
               </div>
               <input type="hidden" id="type" value="expense">
@@ -107,14 +107,14 @@
                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             </div>
             <div>
-              <label for="note" class="block text-sm font-medium text-slate-700 mb-1">Poznámka</label>
+              <label for="note" class="block text-sm font-medium text-slate-700 mb-1">PoznĂˇmka</label>
               <input type="text" id="note" maxlength="200"
-                placeholder="Volitelná poznámka…"
+                placeholder="VolitelnĂˇ poznĂˇmkaâ€¦"
                 class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             </div>
             <button type="submit"
               class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
-              Přidat transakci
+              PĹ™idat transakci
             </button>
           </form>
         </section>
@@ -126,14 +126,14 @@
             <h2 class="text-lg font-semibold text-slate-900">OneDrive synchronizace</h2>
           </div>
           <p class="text-sm text-slate-500 mb-4">
-            Data se automaticky ukládají do souboru <code class="text-xs bg-slate-100 px-1 rounded">MujRozpocet/rozpocet.json</code> ve vašem OneDrive.
+            Data se automaticky uklĂˇdajĂ­ do souboru <code class="text-xs bg-slate-100 px-1 rounded">MujRozpocet/rozpocet.json</code> ve vaĹˇem OneDrive.
           </p>
 
           <div id="https-warning" class="hidden mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs">
-            OneDrive vyžaduje HTTPS. Spusťte aplikaci přes GitHub Pages, Vercel nebo <code>localhost</code> — ne dvojklikem na soubor.
+            OneDrive vyĹľaduje HTTPS. SpusĹĄte aplikaci pĹ™es GitHub Pages, Vercel nebo <code>localhost</code> â€” ne dvojklikem na soubor.
           </div>
 
-          <!-- Nastavení Azure Client ID -->
+          <!-- NastavenĂ­ Azure Client ID -->
           <div id="azure-setup" class="mb-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
             <label for="client-id" class="block text-sm font-medium text-slate-700 mb-1">Azure Client ID</label>
             <div class="flex gap-2">
@@ -141,20 +141,20 @@
                 class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-primary-500">
               <button id="save-client-id-btn"
                 class="shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 px-3 rounded-lg text-xs transition-colors">
-                Uložit
+                UloĹľit
               </button>
             </div>
             <details class="mt-3">
-              <summary class="text-xs text-primary-600 cursor-pointer hover:underline">Jak získat Client ID (jednorázové nastavení)</summary>
+              <summary class="text-xs text-primary-600 cursor-pointer hover:underline">Jak zĂ­skat Client ID (jednorĂˇzovĂ© nastavenĂ­)</summary>
               <ol class="mt-2 text-xs text-slate-600 space-y-1.5 list-decimal list-inside">
-                <li>Jděte na <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" class="text-primary-600 underline">Azure Portal → App registrations</a></li>
-                <li><strong>New registration</strong> → název „Můj rozpočet“</li>
-                <li>Účty: <strong>Personal Microsoft accounts only</strong></li>
+                <li>JdÄ›te na <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" class="text-primary-600 underline">Azure Portal â†’ App registrations</a></li>
+                <li><strong>New registration</strong> â†’ nĂˇzev â€žMĹŻj rozpoÄŤetâ€ś</li>
+                <li>ĂšÄŤty: <strong>Personal Microsoft accounts only</strong></li>
                 <li>Redirect URI: typ <strong>Single-page application (SPA)</strong>, URL:
                   <code id="redirect-uri-hint" class="block mt-1 bg-white px-2 py-1 rounded border text-[10px] break-all"></code>
                 </li>
-                <li>Po vytvoření zkopírujte <strong>Application (client) ID</strong> výše</li>
-                <li>V menu <strong>API permissions</strong> → Add → Microsoft Graph → Delegated → přidejte <strong>Files.ReadWrite</strong> a <strong>User.Read</strong></li>
+                <li>Po vytvoĹ™enĂ­ zkopĂ­rujte <strong>Application (client) ID</strong> vĂ˝Ĺˇe</li>
+                <li>V menu <strong>API permissions</strong> â†’ Add â†’ Microsoft Graph â†’ Delegated â†’ pĹ™idejte <strong>Files.ReadWrite</strong> a <strong>User.Read</strong></li>
               </ol>
             </details>
           </div>
@@ -162,18 +162,18 @@
           <div id="onedrive-connected" class="hidden space-y-3">
             <div class="flex items-center gap-2 text-sm text-slate-600">
               <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-              Přihlášen: <span id="user-name" class="font-medium text-slate-800"></span>
+              PĹ™ihlĂˇĹˇen: <span id="user-name" class="font-medium text-slate-800"></span>
             </div>
             <p id="last-sync-time" class="text-xs text-slate-400"></p>
             <div class="flex flex-col gap-2">
               <button id="sync-now-btn"
                 class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm flex items-center justify-center gap-2">
                 <svg id="sync-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                Synchronizovat nyní
+                Synchronizovat nynĂ­
               </button>
               <button id="logout-btn"
                 class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
-                Odhlásit se z OneDrive
+                OdhlĂˇsit se z OneDrive
               </button>
             </div>
           </div>
@@ -181,15 +181,15 @@
           <div id="onedrive-disconnected">
             <button id="login-btn"
               class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
-              Přihlásit se k OneDrive
+              PĹ™ihlĂˇsit se k OneDrive
             </button>
           </div>
         </section>
 
-        <!-- Ruční záloha -->
+        <!-- RuÄŤnĂ­ zĂˇloha -->
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-2">Ruční záloha</h2>
-          <p class="text-sm text-slate-500 mb-4">Export nebo import JSON souboru (záložní varianta).</p>
+          <h2 class="text-lg font-semibold text-slate-900 mb-2">RuÄŤnĂ­ zĂˇloha</h2>
+          <p class="text-sm text-slate-500 mb-4">Export nebo import JSON souboru (zĂˇloĹľnĂ­ varianta).</p>
           <div class="flex flex-col gap-3">
             <button id="export-btn"
               class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
@@ -205,32 +205,32 @@
         </section>
       </div>
 
-      <!-- Pravý sloupec -->
+      <!-- PravĂ˝ sloupec -->
       <div class="lg:col-span-3 space-y-6">
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-4">Měsíční přehled</h2>
+          <h2 class="text-lg font-semibold text-slate-900 mb-4">MÄ›sĂ­ÄŤnĂ­ pĹ™ehled</h2>
           <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
                   <tr class="bg-slate-50 text-left text-slate-500 uppercase text-xs tracking-wide">
-                    <th class="px-6 py-3 font-medium">Měsíc</th>
-                    <th class="px-6 py-3 font-medium text-right">Příjmy</th>
-                    <th class="px-6 py-3 font-medium text-right">Výdaje</th>
+                    <th class="px-6 py-3 font-medium">MÄ›sĂ­c</th>
+                    <th class="px-6 py-3 font-medium text-right">PĹ™Ă­jmy</th>
+                    <th class="px-6 py-3 font-medium text-right">VĂ˝daje</th>
                     <th class="px-6 py-3 font-medium text-right">Bilance</th>
                   </tr>
                 </thead>
                 <tbody id="monthly-summary-body"></tbody>
               </table>
-              <p id="monthly-summary-empty" class="px-6 py-10 text-center text-slate-400 text-sm">Zatím žádné transakce k zobrazení</p>
+              <p id="monthly-summary-empty" class="px-6 py-10 text-center text-slate-400 text-sm">ZatĂ­m ĹľĂˇdnĂ© transakce k zobrazenĂ­</p>
             </div>
             <div class="space-y-4">
               <div class="bg-slate-50 rounded-2xl h-56 p-4">
-                <h3 class="text-sm font-semibold text-slate-700 mb-3">Bilance příjmů a výdajů</h3>
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">Bilance pĹ™Ă­jmĹŻ a vĂ˝dajĹŻ</h3>
                 <canvas id="monthly-balance-chart" class="w-full h-full"></canvas>
               </div>
               <div class="bg-slate-50 rounded-2xl h-56 p-4">
-                <h3 class="text-sm font-semibold text-slate-700 mb-3">Podíl kategorií</h3>
+                <h3 class="text-sm font-semibold text-slate-700 mb-3">PodĂ­l kategoriĂ­</h3>
                 <canvas id="monthly-category-chart" class="w-full h-full"></canvas>
               </div>
             </div>
@@ -239,8 +239,8 @@
  
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-slate-900">Historie transakcí</h2>
-            <span id="transaction-count" class="text-sm text-slate-500">0 transakcí</span>
+            <h2 class="text-lg font-semibold text-slate-900">Historie transakcĂ­</h2>
+            <span id="transaction-count" class="text-sm text-slate-500">0 transakcĂ­</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -249,8 +249,8 @@
                   <th class="px-6 py-3 font-medium">Datum</th>
                   <th class="px-6 py-3 font-medium">Typ</th>
                   <th class="px-6 py-3 font-medium">Kategorie</th>
-                  <th class="px-6 py-3 font-medium">Poznámka</th>
-                  <th class="px-6 py-3 font-medium text-right">Částka</th>
+                  <th class="px-6 py-3 font-medium">PoznĂˇmka</th>
+                  <th class="px-6 py-3 font-medium text-right">ÄŚĂˇstka</th>
                   <th class="px-6 py-3 font-medium text-center">Akce</th>
                 </tr>
               </thead>
@@ -258,7 +258,7 @@
             </table>
           </div>
           <p id="table-empty" class="px-6 py-10 text-center text-slate-400 text-sm">
-            Zatím nemáte žádné transakce. Přidejte první pomocí formuláře vlevo.
+            ZatĂ­m nemĂˇte ĹľĂˇdnĂ© transakce. PĹ™idejte prvnĂ­ pomocĂ­ formulĂˇĹ™e vlevo.
           </p>
         </section>
       </div>
@@ -266,7 +266,7 @@
   </main>
 
   <footer class="max-w-6xl mx-auto px-4 py-6 text-center text-xs text-slate-400">
-    Lokální cache v prohlížeči + automatická synchronizace do OneDrive po přihlášení.
+    LokĂˇlnĂ­ cache v prohlĂ­ĹľeÄŤi + automatickĂˇ synchronizace do OneDrive po pĹ™ihlĂˇĹˇenĂ­.
   </footer>
 
   <script>
@@ -278,9 +278,9 @@
     const GRAPH_SCOPES = ['User.Read', 'Files.ReadWrite'];
 
     const CATEGORY_COLORS = {
-      'Jídlo': '#f97316', 'Bydlení': '#6366f1', 'Zábava': '#ec4899', 'Doprava': '#14b8a6',
-      'Zdraví': '#ef4444', 'Oblečení': '#a855f7', 'Vzdělání': '#3b82f6', 'Plat': '#22c55e',
-      'Investice': '#eab308', 'Ostatní': '#94a3b8',
+      'JĂ­dlo': '#f97316', 'BydlenĂ­': '#6366f1', 'ZĂˇbava': '#ec4899', 'Doprava': '#14b8a6',
+      'ZdravĂ­': '#ef4444', 'ObleÄŤenĂ­': '#a855f7', 'VzdÄ›lĂˇnĂ­': '#3b82f6', 'Plat': '#22c55e',
+      'Investice': '#eab308', 'OstatnĂ­': '#94a3b8',
     };
 
     let transactions = [];
@@ -311,8 +311,8 @@
     const importInput = document.getElementById('import-input');
 
     const CATEGORY_OPTIONS = {
-      income: ['Plat', 'Ostatní'],
-      expense: ['Jídlo', 'Bydlení', 'Zábava', 'Doprava', 'Zdraví', 'Oblečení', 'Vzdělání', 'Investice', 'Ostatní'],
+      income: ['Plat', 'OstatnĂ­'],
+      expense: ['JĂ­dlo', 'BydlenĂ­', 'ZĂˇbava', 'Doprava', 'ZdravĂ­', 'ObleÄŤenĂ­', 'VzdÄ›lĂˇnĂ­', 'Investice', 'OstatnĂ­'],
     };
 
     function setTransactionType(type) {
@@ -375,6 +375,7 @@
 
     function renderMonthlySummary() {
       const summary = getMonthlySummary();
+      if (!monthlySummaryBody || !monthlySummaryEmpty) return;
       monthlySummaryBody.innerHTML = '';
       monthlySummaryEmpty.classList.toggle('hidden', summary.length > 0);
 
@@ -390,7 +391,7 @@
           <td class="px-6 py-3.5 whitespace-nowrap text-slate-700">${formatMonthLabel(row.monthKey)}</td>
           <td class="px-6 py-3.5 text-right text-emerald-600 font-medium">${formatCurrency(row.income)}</td>
           <td class="px-6 py-3.5 text-right text-rose-600 font-medium">${formatCurrency(row.expense)}</td>
-          <td class="px-6 py-3.5 text-right font-medium ${balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${balance >= 0 ? '+' : '−'}${formatCurrency(Math.abs(balance))}</td>
+          <td class="px-6 py-3.5 text-right font-medium ${balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${balance >= 0 ? '+' : 'â’'}${formatCurrency(Math.abs(balance))}</td>
         `;
         monthlySummaryBody.appendChild(tr);
       }
@@ -405,6 +406,8 @@
       }, { income: 0, expense: 0 });
       const categoryData = getExpenseByCategory();
       const categories = Object.keys(categoryData);
+      const balanceCtx = monthlyBalanceChartEl?.getContext?.('2d');
+      const categoryCtx = monthlyCategoryChartEl?.getContext?.('2d');
 
       if (monthlyBalanceChart) {
         monthlyBalanceChart.destroy();
@@ -415,14 +418,14 @@
         monthlyCategoryChart = null;
       }
 
-      if (summary.length === 0) {
+      if (summary.length === 0 || !balanceCtx || !categoryCtx) {
         return;
       }
 
       monthlyBalanceChart = new Chart(monthlyBalanceChartEl.getContext('2d'), {
         type: 'doughnut',
         data: {
-          labels: ['Příjmy', 'Výdaje'],
+          labels: ['PĹ™Ă­jmy', 'VĂ˝daje'],
           datasets: [{
             data: [totals.income, totals.expense],
             backgroundColor: ['#22c55e', '#ef4444'],
@@ -605,9 +608,9 @@
         document.getElementById('user-name').textContent = account.name || account.username;
         const lastSync = localStorage.getItem(LAST_SYNC_KEY);
         document.getElementById('last-sync-time').textContent = lastSync
-          ? `Poslední synchronizace: ${formatDateTime(lastSync)}`
-          : 'Zatím nesynchronizováno';
-        setSyncStatus('idle', 'OneDrive připojen');
+          ? `PoslednĂ­ synchronizace: ${formatDateTime(lastSync)}`
+          : 'ZatĂ­m nesynchronizovĂˇno';
+        setSyncStatus('idle', 'OneDrive pĹ™ipojen');
       } else {
         document.getElementById('sync-status-badge').classList.add('hidden');
       }
@@ -654,7 +657,7 @@
       const url = `https://graph.microsoft.com/v1.0/me/drive/root:/${ONEDRIVE_PATH}:/content`;
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.status === 404) return null;
-      if (!res.ok) throw new Error(`Stažení selhalo (${res.status})`);
+      if (!res.ok) throw new Error(`StaĹľenĂ­ selhalo (${res.status})`);
       return JSON.parse(await res.text());
     }
 
@@ -668,7 +671,7 @@
         },
         body: JSON.stringify(buildPayload(), null, 2),
       });
-      if (!res.ok) throw new Error(`Nahrání selhalo (${res.status})`);
+      if (!res.ok) throw new Error(`NahrĂˇnĂ­ selhalo (${res.status})`);
       localStorage.setItem(LAST_SYNC_KEY, new Date().toISOString());
     }
 
@@ -700,7 +703,7 @@
       if (!token) return;
 
       isSyncing = true;
-      setSyncStatus('syncing', 'Synchronizuji…');
+      setSyncStatus('syncing', 'Synchronizujiâ€¦');
       document.getElementById('sync-icon')?.classList.add('animate-spin');
 
       try {
@@ -713,7 +716,7 @@
         skipNextSync = false;
 
         updateOneDriveUI();
-        setSyncStatus('idle', 'Synchronizováno');
+        setSyncStatus('idle', 'SynchronizovĂˇno');
       } catch (err) {
         console.error(err);
         setSyncStatus('error', 'Chyba synchronizace');
@@ -732,11 +735,11 @@
 
     async function loginOneDrive() {
       if (!isHttpsAvailable()) {
-        alert('OneDrive vyžaduje HTTPS. Nahrajte aplikaci na GitHub Pages nebo Vercel.');
+        alert('OneDrive vyĹľaduje HTTPS. Nahrajte aplikaci na GitHub Pages nebo Vercel.');
         return;
       }
       if (!getClientId()) {
-        alert('Nejdříve zadejte a uložte Azure Client ID.');
+        alert('NejdĹ™Ă­ve zadejte a uloĹľte Azure Client ID.');
         document.getElementById('client-id').focus();
         return;
       }
@@ -752,7 +755,7 @@
         await syncWithOneDrive(true);
       } catch (err) {
         if (err.errorCode !== 'user_cancelled') {
-          alert('Přihlášení selhalo: ' + (err.message || err.errorCode));
+          alert('PĹ™ihlĂˇĹˇenĂ­ selhalo: ' + (err.message || err.errorCode));
         }
       }
     }
@@ -802,7 +805,7 @@
       transactionsBody.innerHTML = '';
       const count = transactions.length;
       document.getElementById('transaction-count').textContent =
-        count === 1 ? '1 transakce' : count < 5 ? `${count} transakce` : `${count} transakcí`;
+        count === 1 ? '1 transakce' : count < 5 ? `${count} transakce` : `${count} transakcĂ­`;
       tableEmpty.classList.toggle('hidden', count > 0);
 
       for (const t of transactions) {
@@ -810,10 +813,10 @@
         tr.className = 'border-t border-slate-100 hover:bg-slate-50 transition-colors';
         const isIncome = t.type === 'income';
         const typeBadge = isIncome
-          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Příjem</span>'
-          : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">Výdaj</span>';
+          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">PĹ™Ă­jem</span>'
+          : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">VĂ˝daj</span>';
         const amountClass = isIncome ? 'text-emerald-600' : 'text-rose-600';
-        const amountPrefix = isIncome ? '+' : '−';
+        const amountPrefix = isIncome ? '+' : 'â’';
 
         tr.innerHTML = `
           <td class="px-6 py-3.5 whitespace-nowrap text-slate-700">${formatDate(t.date)}</td>
@@ -824,7 +827,7 @@
               ${escapeHtml(t.category)}
             </span>
           </td>
-          <td class="px-6 py-3.5 text-slate-500 max-w-[160px] truncate" title="${escapeHtml(t.note)}">${escapeHtml(t.note) || '—'}</td>
+          <td class="px-6 py-3.5 text-slate-500 max-w-[160px] truncate" title="${escapeHtml(t.note)}">${escapeHtml(t.note) || 'â€”'}</td>
           <td class="px-6 py-3.5 text-right font-medium ${amountClass} whitespace-nowrap">${amountPrefix}${formatCurrency(t.amount)}</td>
           <td class="px-6 py-3.5 text-center">
             <button data-id="${t.id}" class="delete-btn text-slate-400 hover:text-rose-600 transition-colors p-1 rounded" title="Smazat">
@@ -883,8 +886,8 @@
     function render() {
       updateSummaryCards();
       renderTable();
-      renderChart();
       renderMonthlySummary();
+      renderChart();
       renderMonthlyCharts();
     }
 
@@ -902,15 +905,15 @@
         try {
           const data = JSON.parse(e.target.result);
           const imported = normalizeTransactions(data.transactions || data);
-          if (imported.length === 0) throw new Error('Soubor neobsahuje platné transakce');
-          if (transactions.length > 0 && !confirm('Import přepíše stávající data. Pokračovat?')) return;
+          if (imported.length === 0) throw new Error('Soubor neobsahuje platnĂ© transakce');
+          if (transactions.length > 0 && !confirm('Import pĹ™epĂ­Ĺˇe stĂˇvajĂ­cĂ­ data. PokraÄŤovat?')) return;
 
           transactions = imported;
           saveTransactions();
           render();
-          alert(`Importováno ${transactions.length} transakcí.`);
+          alert(`ImportovĂˇno ${transactions.length} transakcĂ­.`);
         } catch (err) {
-          alert('Chyba při importu: ' + err.message);
+          alert('Chyba pĹ™i importu: ' + err.message);
         }
       };
       reader.readAsText(file);
@@ -938,13 +941,13 @@
     document.getElementById('save-client-id-btn').addEventListener('click', async () => {
       const id = document.getElementById('client-id').value.trim();
       if (!id.match(/^[0-9a-f-]{36}$/i)) {
-        alert('Zadejte platné Client ID (formát UUID).');
+        alert('Zadejte platnĂ© Client ID (formĂˇt UUID).');
         return;
       }
       localStorage.setItem(CLIENT_ID_KEY, id);
       msalInstance = null;
       await initMsal();
-      alert('Client ID uloženo. Nyní se můžete přihlásit k OneDrive.');
+      alert('Client ID uloĹľeno. NynĂ­ se mĹŻĹľete pĹ™ihlĂˇsit k OneDrive.');
     });
 
     document.getElementById('login-btn').addEventListener('click', loginOneDrive);
@@ -954,7 +957,7 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const amount = parseFloat(amountInput.value);
-      if (!amount || amount <= 0) { alert('Zadejte platnou kladnou částku.'); return; }
+      if (!amount || amount <= 0) { alert('Zadejte platnou kladnou ÄŤĂˇstku.'); return; }
       addTransaction({
         amount, type: typeSelect.value, category: categoryInput.value,
         date: dateInput.value, note: noteInput.value,
@@ -991,3 +994,6 @@
   </script>
 </body>
 </html>
+
+
+
