@@ -204,7 +204,7 @@
               <span class="block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
                 Importovat data
               </span>
-              <input type="file" id="import-input" accept=",application/json" class="hidden">
+              <input type="file" id="import-input" accept=".json,application/json" class="hidden">
             </label>
           </div>
         </section>
@@ -426,7 +426,7 @@
       }
     }
 
-    function initMsal() {
+    async function initMsal() {
       const clientId = getClientId();
       if (!clientId) return false;
 
@@ -441,6 +441,7 @@
           storeAuthStateInCookie: true,
         },
       });
+      await msalInstance.initialize();
       return true;
     }
 
@@ -496,7 +497,7 @@
         return false;
       }
 
-      if (cloudTime > localTime || (cloudTx.length > 0 && transactions.length === 0)) {
+      if (cloudUpdated > localTime || (cloudTx.length > 0 && transactions.length === 0)) {
         transactions = cloudTx;
         skipNextSync = true;
         saveTransactionsLocal();
@@ -552,9 +553,12 @@
         document.getElementById('client-id').focus();
         return;
       }
-      if (!msalInstance && !initMsal()) return;
 
-      await msalInstance.initialize();
+      if (!msalInstance) {
+        const ok = await initMsal();
+        if (!ok) return;
+      }
+
       try {
         await msalInstance.loginPopup({ scopes: GRAPH_SCOPES });
         updateOneDriveUI();
@@ -737,7 +741,7 @@
     const savedClientId = getClientId();
     if (savedClientId) document.getElementById('client-id').value = savedClientId;
 
-    document.getElementById('save-client-id-btn').addEventListener('click', () => {
+    document.getElementById('save-client-id-btn').addEventListener('click', async () => {
       const id = document.getElementById('client-id').value.trim();
       if (!id.match(/^[0-9a-f-]{36}$/i)) {
         alert('Zadejte platné Client ID (formát UUID).');
@@ -745,7 +749,7 @@
       }
       localStorage.setItem(CLIENT_ID_KEY, id);
       msalInstance = null;
-      initMsal();
+      await initMsal();
       alert('Client ID uloženo. Nyní se můžete přihlásit k OneDrive.');
     });
 
@@ -779,9 +783,8 @@
       render();
 
       if (getClientId() && isHttpsAvailable()) {
-        initMsal();
+        await initMsal();
         if (msalInstance) {
-          await msalInstance.initialize();
           updateOneDriveUI();
           if (msalInstance.getAllAccounts().length > 0) {
             await syncWithOneDrive(false);
