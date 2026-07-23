@@ -236,7 +236,50 @@
             </div>
           </div>
         </section>
- 
+
+        <!-- Strategie 33/33/33 -->
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+          <h2 class="text-lg font-semibold text-slate-100 mb-4">📊 Strategie 33/33/33</h2>
+          <p class="text-sm text-slate-400 mb-6">Sledování rozdělení příjmů podle strategie: 33% běžné náklady, 33% budoucnost, 33% osobní spotřeba.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-slate-700 text-left text-slate-400 uppercase text-xs tracking-wide">
+                  <th class="px-4 py-3 font-medium">Kategorie</th>
+                  <th class="px-4 py-3 font-medium text-right">Měsíční cíl (33%)</th>
+                  <th class="px-4 py-3 font-medium text-right">Dosavadně</th>
+                  <th class="px-4 py-3 font-medium text-right">Zbývá</th>
+                  <th class="px-4 py-3 font-medium text-right">Procento</th>
+                </tr>
+              </thead>
+              <tbody id="strategy-body">
+                <tr class="border-t border-slate-700">
+                  <td colspan="5" class="px-4 py-6 text-center text-slate-500 text-sm">Zatím žádné příjmy k rozdělení</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-700">
+            <div class="grid grid-cols-3 gap-4">
+              <div class="bg-slate-700 rounded-lg p-4">
+                <p class="text-xs text-slate-400 mb-1">Běžné náklady</p>
+                <p id="strategy-essential-value" class="text-xl font-bold text-slate-100">0 Kč</p>
+                <div class="w-full bg-slate-600 rounded-full h-2 mt-2"><div id="strategy-essential-bar" class="bg-sky-500 h-2 rounded-full" style="width: 0%"></div></div>
+              </div>
+              <div class="bg-slate-700 rounded-lg p-4">
+                <p class="text-xs text-slate-400 mb-1">Budoucnost</p>
+                <p id="strategy-future-value" class="text-xl font-bold text-slate-100">0 Kč</p>
+                <div class="w-full bg-slate-600 rounded-full h-2 mt-2"><div id="strategy-future-bar" class="bg-purple-500 h-2 rounded-full" style="width: 0%"></div></div>
+              </div>
+              <div class="bg-slate-700 rounded-lg p-4">
+                <p class="text-xs text-slate-400 mb-1">Osobní spotřeba</p>
+                <p id="strategy-personal-value" class="text-xl font-bold text-slate-100">0 Kč</p>
+                <div class="w-full bg-slate-600 rounded-full h-2 mt-2"><div id="strategy-personal-bar" class="bg-pink-500 h-2 rounded-full" style="width: 0%"></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 overflow-hidden">
           <div class="px-6 py-5 border-b border-slate-700 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-slate-100">Historie transakcí</h2>
@@ -788,6 +831,102 @@
       return map;
     }
 
+    function getStrategyBudgets() {
+      const monthlyIncome = (() => {
+        let sum = 0;
+        for (const t of transactions) {
+          if (t.type === 'income' && isCurrentMonth(t.date)) sum += t.amount;
+        }
+        return sum;
+      })();
+
+      const budgets = {
+        essential: Math.round(monthlyIncome * 0.33 * 100) / 100,  // Běžné náklady
+        future: Math.round(monthlyIncome * 0.33 * 100) / 100,     // Budoucnost
+        personal: Math.round(monthlyIncome * 0.34 * 100) / 100,   // Osobní (34% aby se to rovnalo 100%)
+      };
+
+      const essentialCategories = ['Jídlo', 'Bydlení', 'Doprava', 'Zdraví'];
+      const futureCategories = ['Investice'];
+      const personalCategories = ['Zábava', 'Oblečení', 'Vzdělání', 'Ostatní'];
+
+      const essentialSpent = essentialCategories.reduce((sum, cat) => {
+        const expenses = transactions.filter(t => t.type === 'expense' && t.category === cat && isCurrentMonth(t.date));
+        return sum + expenses.reduce((s, t) => s + t.amount, 0);
+      }, 0);
+
+      const futureSpent = futureCategories.reduce((sum, cat) => {
+        const expenses = transactions.filter(t => t.type === 'expense' && t.category === cat && isCurrentMonth(t.date));
+        return sum + expenses.reduce((s, t) => s + t.amount, 0);
+      }, 0);
+
+      const personalSpent = personalCategories.reduce((sum, cat) => {
+        const expenses = transactions.filter(t => t.type === 'expense' && t.category === cat && isCurrentMonth(t.date));
+        return sum + expenses.reduce((s, t) => s + t.amount, 0);
+      }, 0);
+
+      return {
+        monthlyIncome,
+        essential: { budget: budgets.essential, spent: essentialSpent, remaining: budgets.essential - essentialSpent },
+        future: { budget: budgets.future, spent: futureSpent, remaining: budgets.future - futureSpent },
+        personal: { budget: budgets.personal, spent: personalSpent, remaining: budgets.personal - personalSpent },
+      };
+    }
+
+    function renderStrategyTable() {
+      const strategy = getStrategyBudgets();
+      const strategyBody = document.getElementById('strategy-body');
+      if (!strategyBody) return;
+
+      if (strategy.monthlyIncome === 0) {
+        strategyBody.innerHTML = `
+          <tr class="border-t border-slate-700">
+            <td colspan="5" class="px-4 py-6 text-center text-slate-500 text-sm">Zatím žádné příjmy k rozdělení</td>
+          </tr>
+        `;
+        document.getElementById('strategy-essential-value').textContent = '0 Kč';
+        document.getElementById('strategy-future-value').textContent = '0 Kč';
+        document.getElementById('strategy-personal-value').textContent = '0 Kč';
+        document.getElementById('strategy-essential-bar').style.width = '0%';
+        document.getElementById('strategy-future-bar').style.width = '0%';
+        document.getElementById('strategy-personal-bar').style.width = '0%';
+        return;
+      }
+
+      const categories = [
+        { name: 'Běžné životní náklady (33%)', key: 'essential', color: 'sky' },
+        { name: 'Budoucnost a investice (33%)', key: 'future', color: 'purple' },
+        { name: 'Osobní spotřeba & Radosti (34%)', key: 'personal', color: 'pink' },
+      ];
+
+      strategyBody.innerHTML = categories.map(cat => {
+        const data = strategy[cat.key];
+        const percentage = data.budget > 0 ? Math.round((data.spent / data.budget) * 100) : 0;
+        const percentageClass = percentage <= 100 ? 'text-slate-300' : 'text-rose-400 font-bold';
+        return `
+          <tr class="border-t border-slate-700 hover:bg-slate-700 transition-colors">
+            <td class="px-4 py-3.5 text-slate-300">${cat.name}</td>
+            <td class="px-4 py-3.5 text-right font-medium text-slate-100">${formatCurrency(data.budget)}</td>
+            <td class="px-4 py-3.5 text-right font-medium text-slate-100">${formatCurrency(data.spent)}</td>
+            <td class="px-4 py-3.5 text-right font-medium ${data.remaining >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.remaining >= 0 ? '+' : '−'}${formatCurrency(Math.abs(data.remaining))}</td>
+            <td class="px-4 py-3.5 text-right font-medium ${percentageClass}">${percentage}%</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('strategy-essential-value').textContent = formatCurrency(strategy.essential.spent);
+      document.getElementById('strategy-future-value').textContent = formatCurrency(strategy.future.spent);
+      document.getElementById('strategy-personal-value').textContent = formatCurrency(strategy.personal.spent);
+
+      const essentialPercent = Math.min(100, Math.round((strategy.essential.spent / strategy.essential.budget) * 100)) || 0;
+      const futurePercent = Math.min(100, Math.round((strategy.future.spent / strategy.future.budget) * 100)) || 0;
+      const personalPercent = Math.min(100, Math.round((strategy.personal.spent / strategy.personal.budget) * 100)) || 0;
+
+      document.getElementById('strategy-essential-bar').style.width = essentialPercent + '%';
+      document.getElementById('strategy-future-bar').style.width = futurePercent + '%';
+      document.getElementById('strategy-personal-bar').style.width = personalPercent + '%';
+    }
+
     function updateSummaryCards() {
       const { totalBalance, monthlyIncome, monthlyExpense } = calculateStats();
       const monthLabel = getCurrentMonthLabel();
@@ -856,6 +995,7 @@
       updateSummaryCards();
       renderTable();
       renderMonthlySummary();
+      renderStrategyTable();
       renderChart();
       renderMonthlyCharts();
     }
