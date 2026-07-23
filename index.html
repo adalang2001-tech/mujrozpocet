@@ -26,16 +26,16 @@
     .animate-spin { animation: spin 1s linear infinite; }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800">
+<body class="bg-slate-900 min-h-screen text-slate-100">
 
-  <header class="bg-white border-b border-slate-200 shadow-sm">
+  <header class="bg-slate-800 border-b border-slate-700 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 py-5">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center text-white font-bold text-lg">₿</div>
           <div>
-            <h1 class="text-2xl font-bold text-slate-900">Můj rozpočet</h1>
-            <p class="text-sm text-slate-500">Osobní správa financí</p>
+            <h1 class="text-2xl font-bold text-slate-100">Můj rozpočet</h1>
+            <p class="text-sm text-slate-400">Osobní správa financí</p>
           </div>
         </div>
         <div id="sync-status-badge" class="hidden items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border">
@@ -50,20 +50,20 @@
 
     <!-- Souhrnné kartičky -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Celkový zůstatek</p>
-        <p id="total-balance" class="text-3xl font-bold text-slate-900">0 Kč</p>
-        <p class="text-xs text-slate-400 mt-2">Všechny transakce</p>
+      <div class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+        <p class="text-sm font-medium text-slate-400 mb-1">Celkový zůstatek</p>
+        <p id="total-balance" class="text-3xl font-bold text-slate-100">0 Kč</p>
+        <p class="text-xs text-slate-500 mt-2">Všechny transakce</p>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Příjmy tento měsíc</p>
-        <p id="monthly-income" class="text-3xl font-bold text-emerald-600">0 Kč</p>
-        <p id="month-label-income" class="text-xs text-slate-400 mt-2"></p>
+      <div class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+        <p class="text-sm font-medium text-slate-400 mb-1">Příjmy tento měsíc</p>
+        <p id="monthly-income" class="text-3xl font-bold text-emerald-400">0 Kč</p>
+        <p id="month-label-income" class="text-xs text-slate-500 mt-2"></p>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <p class="text-sm font-medium text-slate-500 mb-1">Výdaje tento měsíc</p>
-        <p id="monthly-expense" class="text-3xl font-bold text-rose-600">0 Kč</p>
-        <p id="month-label-expense" class="text-xs text-slate-400 mt-2"></p>
+      <div class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+        <p class="text-sm font-medium text-slate-400 mb-1">Výdaje tento měsíc</p>
+        <p id="monthly-expense" class="text-3xl font-bold text-rose-400">0 Kč</p>
+        <p id="month-label-expense" class="text-xs text-slate-500 mt-2"></p>
       </div>
     </section>
 
@@ -73,44 +73,44 @@
       <div class="lg:col-span-2 space-y-6">
 
         <!-- Formulář -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-5">Nová transakce</h2>
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+          <h2 class="text-lg font-semibold text-slate-100 mb-5">Nová transakce</h2>
           <form id="transaction-form" class="space-y-4">
             <div>
-              <label for="amount" class="block text-sm font-medium text-slate-700 mb-1">Částka (Kč)</label>
+              <label for="amount" class="block text-sm font-medium text-slate-300 mb-1">Částka (Kč)</label>
               <input type="number" id="amount" min="0.01" step="0.01" required
                 placeholder="0,00"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                class="w-full rounded-lg border border-slate-600 bg-slate-700 text-slate-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-slate-500">
             </div>
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Typ</label>
+              <label class="block text-sm font-medium text-slate-300 mb-1">Typ</label>
               <div class="flex gap-2" role="group" aria-label="Typ transakce">
                 <button type="button" id="type-expense" data-type="expense"
                   class="type-button flex-1 rounded-lg border border-transparent bg-rose-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500">
                   Výdaj
                 </button>
                 <button type="button" id="type-income" data-type="income"
-                  class="type-button flex-1 rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100">
+                  class="type-button flex-1 rounded-lg border border-slate-600 bg-slate-700 text-slate-300 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-600">
                   Příjem
                 </button>
               </div>
               <input type="hidden" id="type" value="expense">
             </div>
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Kategorie</label>
+              <label class="block text-sm font-medium text-slate-300 mb-1">Kategorie</label>
               <div id="category-buttons" class="grid grid-cols-2 gap-2"></div>
               <input type="hidden" id="category" value="Plat">
             </div>
             <div>
-              <label for="date" class="block text-sm font-medium text-slate-700 mb-1">Datum</label>
+              <label for="date" class="block text-sm font-medium text-slate-300 mb-1">Datum</label>
               <input type="date" id="date" required
-                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                class="w-full rounded-lg border border-slate-600 bg-slate-700 text-slate-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             </div>
             <div>
-              <label for="note" class="block text-sm font-medium text-slate-700 mb-1">Poznámka</label>
+              <label for="note" class="block text-sm font-medium text-slate-300 mb-1">Poznámka</label>
               <input type="text" id="note" maxlength="200"
                 placeholder="Volitelná poznámka…"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                class="w-full rounded-lg border border-slate-600 bg-slate-700 text-slate-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-slate-500">
             </div>
             <button type="submit"
               class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
@@ -120,38 +120,38 @@
         </section>
 
         <!-- OneDrive synchronizace -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
           <div class="flex items-center gap-2 mb-2">
-            <svg class="w-5 h-5 text-sky-600" fill="currentColor" viewBox="0 0 24 24"><path d="M10.5 18.5l-4-4 1.4-1.4 2.6 2.6 6.6-6.6 1.4 1.4-8 8z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" opacity=".3"/></svg>
-            <h2 class="text-lg font-semibold text-slate-900">OneDrive synchronizace</h2>
+            <svg class="w-5 h-5 text-sky-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10.5 18.5l-4-4 1.4-1.4 2.6 2.6 6.6-6.6 1.4 1.4-8 8z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" opacity=".3"/></svg>
+            <h2 class="text-lg font-semibold text-slate-100">OneDrive synchronizace</h2>
           </div>
-          <p class="text-sm text-slate-500 mb-4">
-            Data se automaticky ukládají do souboru <code class="text-xs bg-slate-100 px-1 rounded">MujRozpocet/rozpocet.json</code> ve vašem OneDrive.
+          <p class="text-sm text-slate-400 mb-4">
+            Data se automaticky ukládají do souboru <code class="text-xs bg-slate-700 text-slate-200 px-1 rounded">MujRozpocet/rozpocet.json</code> ve vašem OneDrive.
           </p>
 
-          <div id="https-warning" class="hidden mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs">
+          <div id="https-warning" class="hidden mb-4 p-3 rounded-lg bg-amber-900 border border-amber-700 text-amber-200 text-xs">
             OneDrive vyžaduje HTTPS. Spusťte aplikaci přes GitHub Pages, Vercel nebo <code>localhost</code> — ne dvojklikem na soubor.
           </div>
 
           <!-- Nastavení Azure Client ID -->
-          <div id="azure-setup" class="mb-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-            <label for="client-id" class="block text-sm font-medium text-slate-700 mb-1">Azure Client ID</label>
+          <div id="azure-setup" class="mb-4 p-4 rounded-lg bg-slate-700 border border-slate-600">
+            <label for="client-id" class="block text-sm font-medium text-slate-300 mb-1">Azure Client ID</label>
             <div class="flex gap-2">
               <input type="text" id="client-id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-primary-500">
+                class="flex-1 rounded-lg border border-slate-600 bg-slate-600 text-slate-100 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder-slate-500">
               <button id="save-client-id-btn"
-                class="shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 px-3 rounded-lg text-xs transition-colors">
+                class="shrink-0 bg-slate-600 hover:bg-slate-500 text-slate-100 font-medium py-2 px-3 rounded-lg text-xs transition-colors">
                 Uložit
               </button>
             </div>
             <details class="mt-3">
-              <summary class="text-xs text-primary-600 cursor-pointer hover:underline">Jak získat Client ID (jednorázové nastavení)</summary>
-              <ol class="mt-2 text-xs text-slate-600 space-y-1.5 list-decimal list-inside">
-                <li>Jděte na <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" class="text-primary-600 underline">Azure Portal → App registrations</a></li>
+              <summary class="text-xs text-primary-400 cursor-pointer hover:underline">Jak získat Client ID (jednorázové nastavení)</summary>
+              <ol class="mt-2 text-xs text-slate-400 space-y-1.5 list-decimal list-inside">
+                <li>Jděte na <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" class="text-primary-400 underline">Azure Portal → App registrations</a></li>
                 <li><strong>New registration</strong> → název „Můj rozpočet“</li>
                 <li>Účty: <strong>Personal Microsoft accounts only</strong></li>
                 <li>Redirect URI: typ <strong>Single-page application (SPA)</strong>, URL:
-                  <code id="redirect-uri-hint" class="block mt-1 bg-white px-2 py-1 rounded border text-[10px] break-all"></code>
+                  <code id="redirect-uri-hint" class="block mt-1 bg-slate-800 px-2 py-1 rounded border border-slate-600 text-[10px] break-all text-slate-300"></code>
                 </li>
                 <li>Po vytvoření zkopírujte <strong>Application (client) ID</strong> výše</li>
                 <li>V menu <strong>API permissions</strong> → Add → Microsoft Graph → Delegated → přidejte <strong>Files.ReadWrite</strong> a <strong>User.Read</strong></li>
@@ -160,11 +160,11 @@
           </div>
 
           <div id="onedrive-connected" class="hidden space-y-3">
-            <div class="flex items-center gap-2 text-sm text-slate-600">
-              <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-              Přihlášen: <span id="user-name" class="font-medium text-slate-800"></span>
+            <div class="flex items-center gap-2 text-sm text-slate-300">
+              <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              Přihlášen: <span id="user-name" class="font-medium text-slate-200"></span>
             </div>
-            <p id="last-sync-time" class="text-xs text-slate-400"></p>
+            <p id="last-sync-time" class="text-xs text-slate-500"></p>
             <div class="flex flex-col gap-2">
               <button id="sync-now-btn"
                 class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm flex items-center justify-center gap-2">
@@ -172,7 +172,7 @@
                 Synchronizovat nyní
               </button>
               <button id="logout-btn"
-                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
+                class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
                 Odhlásit se z OneDrive
               </button>
             </div>
@@ -187,16 +187,16 @@
         </section>
 
         <!-- Ruční záloha -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-2">Ruční záloha</h2>
-          <p class="text-sm text-slate-500 mb-4">Export nebo import JSON souboru (záložní varianta).</p>
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+          <h2 class="text-lg font-semibold text-slate-100 mb-2">Ruční záloha</h2>
+          <p class="text-sm text-slate-400 mb-4">Export nebo import JSON souboru (záložní varianta).</p>
           <div class="flex flex-col gap-3">
             <button id="export-btn"
-              class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
+              class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
               Exportovat data (JSON)
             </button>
             <label class="w-full cursor-pointer">
-              <span class="block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-200">
+              <span class="block w-full text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
                 Importovat data
               </span>
               <input type="file" id="import-input" accept=".json,application/json" class="hidden">
@@ -207,13 +207,13 @@
 
       <!-- Pravý sloupec -->
       <div class="lg:col-span-3 space-y-6">
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-lg font-semibold text-slate-900 mb-4">Měsíční přehled</h2>
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+          <h2 class="text-lg font-semibold text-slate-100 mb-4">Měsíční přehled</h2>
           <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
-                  <tr class="bg-slate-50 text-left text-slate-500 uppercase text-xs tracking-wide">
+                  <tr class="bg-slate-700 text-left text-slate-400 uppercase text-xs tracking-wide">
                     <th class="px-6 py-3 font-medium">Měsíc</th>
                     <th class="px-6 py-3 font-medium text-right">Příjmy</th>
                     <th class="px-6 py-3 font-medium text-right">Výdaje</th>
@@ -222,30 +222,30 @@
                 </thead>
                 <tbody id="monthly-summary-body"></tbody>
               </table>
-              <p id="monthly-summary-empty" class="px-6 py-10 text-center text-slate-400 text-sm">Zatím žádné transakce k zobrazení</p>
+              <p id="monthly-summary-empty" class="px-6 py-10 text-center text-slate-500 text-sm">Zatím žádné transakce k zobrazení</p>
             </div>
             <div class="space-y-4">
-              <div class="bg-slate-50 rounded-2xl h-56 p-4">
-                <h3 class="text-sm font-semibold text-slate-700 mb-3">Bilance příjmů a výdajů</h3>
+              <div class="bg-slate-700 rounded-2xl h-56 p-4">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">Bilance příjmů a výdajů</h3>
                 <canvas id="monthly-balance-chart" class="w-full h-full"></canvas>
               </div>
-              <div class="bg-slate-50 rounded-2xl h-56 p-4">
-                <h3 class="text-sm font-semibold text-slate-700 mb-3">Podíl kategorií</h3>
+              <div class="bg-slate-700 rounded-2xl h-56 p-4">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">Podíl kategorií</h3>
                 <canvas id="monthly-category-chart" class="w-full h-full"></canvas>
               </div>
             </div>
           </div>
         </section>
  
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-slate-900">Historie transakcí</h2>
-            <span id="transaction-count" class="text-sm text-slate-500">0 transakcí</span>
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 overflow-hidden">
+          <div class="px-6 py-5 border-b border-slate-700 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-slate-100">Historie transakcí</h2>
+            <span id="transaction-count" class="text-sm text-slate-400">0 transakcí</span>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
-                <tr class="bg-slate-50 text-left text-slate-500 uppercase text-xs tracking-wide">
+                <tr class="bg-slate-700 text-left text-slate-400 uppercase text-xs tracking-wide">
                   <th class="px-6 py-3 font-medium">Datum</th>
                   <th class="px-6 py-3 font-medium">Typ</th>
                   <th class="px-6 py-3 font-medium">Kategorie</th>
@@ -257,7 +257,7 @@
               <tbody id="transactions-body"></tbody>
             </table>
           </div>
-          <p id="table-empty" class="px-6 py-10 text-center text-slate-400 text-sm">
+          <p id="table-empty" class="px-6 py-10 text-center text-slate-500 text-sm">
             Zatím nemáte žádné transakce. Přidejte první pomocí formuláře vlevo.
           </p>
         </section>
@@ -265,7 +265,7 @@
     </div>
   </main>
 
-  <footer class="max-w-6xl mx-auto px-4 py-6 text-center text-xs text-slate-400">
+  <footer class="max-w-6xl mx-auto px-4 py-6 text-center text-xs text-slate-500">
     Lokální cache v prohlížeči + automatická synchronizace do OneDrive po přihlášení.
   </footer>
 
@@ -337,8 +337,8 @@
         button.textContent = category;
         button.dataset.category = category;
         button.className = category === selectedCategory
-          ? 'category-button rounded-lg border border-transparent bg-primary-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500'
-          : 'category-button rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
+          ? 'category-button rounded-lg border border-transparent bg-primary-500 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-400'
+          : 'category-button rounded-lg border border-slate-600 bg-slate-700 text-slate-300 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-600';
         button.addEventListener('click', () => setCategory(category));
         categoryButtonsContainer.appendChild(button);
       }
@@ -349,8 +349,8 @@
       categoryButtonsContainer.querySelectorAll('.category-button').forEach(btn => {
         const isActive = btn.dataset.category === category;
         btn.className = isActive
-          ? 'category-button rounded-lg border border-transparent bg-primary-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500'
-          : 'category-button rounded-lg border border-slate-300 bg-white text-slate-700 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-100';
+          ? 'category-button rounded-lg border border-transparent bg-primary-500 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-400'
+          : 'category-button rounded-lg border border-slate-600 bg-slate-700 text-slate-300 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-600';
       });
     }
 
@@ -384,13 +384,13 @@
 
       for (const row of summary) {
         const tr = document.createElement('tr');
-        tr.className = 'border-t border-slate-100 hover:bg-slate-50 transition-colors';
+        tr.className = 'border-t border-slate-700 hover:bg-slate-700 transition-colors';
         const balance = row.income - row.expense;
         tr.innerHTML = `
-          <td class="px-6 py-3.5 whitespace-nowrap text-slate-700">${formatMonthLabel(row.monthKey)}</td>
-          <td class="px-6 py-3.5 text-right text-emerald-600 font-medium">${formatCurrency(row.income)}</td>
-          <td class="px-6 py-3.5 text-right text-rose-600 font-medium">${formatCurrency(row.expense)}</td>
-          <td class="px-6 py-3.5 text-right font-medium ${balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${balance >= 0 ? '+' : '−'}${formatCurrency(Math.abs(balance))}</td>
+          <td class="px-6 py-3.5 whitespace-nowrap text-slate-300">${formatMonthLabel(row.monthKey)}</td>
+          <td class="px-6 py-3.5 text-right text-emerald-400 font-medium">${formatCurrency(row.income)}</td>
+          <td class="px-6 py-3.5 text-right text-rose-400 font-medium">${formatCurrency(row.expense)}</td>
+          <td class="px-6 py-3.5 text-right font-medium ${balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${balance >= 0 ? '+' : '−'}${formatCurrency(Math.abs(balance))}</td>
         `;
         monthlySummaryBody.appendChild(tr);
       }
@@ -793,7 +793,7 @@
       const monthLabel = getCurrentMonthLabel();
       const balanceEl = document.getElementById('total-balance');
       balanceEl.textContent = formatCurrency(totalBalance);
-      balanceEl.className = `text-3xl font-bold ${totalBalance >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
+      balanceEl.className = `text-3xl font-bold ${totalBalance >= 0 ? 'text-slate-100' : 'text-rose-400'}`;
       document.getElementById('monthly-income').textContent = formatCurrency(monthlyIncome);
       document.getElementById('monthly-expense').textContent = formatCurrency(monthlyExpense);
       document.getElementById('month-label-income').textContent = monthLabel;
@@ -809,27 +809,27 @@
 
       for (const t of transactions) {
         const tr = document.createElement('tr');
-        tr.className = 'border-t border-slate-100 hover:bg-slate-50 transition-colors';
+        tr.className = 'border-t border-slate-700 hover:bg-slate-700 transition-colors';
         const isIncome = t.type === 'income';
         const typeBadge = isIncome
-          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Příjem</span>'
-          : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">Výdaj</span>';
-        const amountClass = isIncome ? 'text-emerald-600' : 'text-rose-600';
+          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-900 text-emerald-300">Příjem</span>'
+          : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-900 text-rose-300">Výdaj</span>';
+        const amountClass = isIncome ? 'text-emerald-400' : 'text-rose-400';
         const amountPrefix = isIncome ? '+' : '−';
 
         tr.innerHTML = `
-          <td class="px-6 py-3.5 whitespace-nowrap text-slate-700">${formatDate(t.date)}</td>
+          <td class="px-6 py-3.5 whitespace-nowrap text-slate-300">${formatDate(t.date)}</td>
           <td class="px-6 py-3.5">${typeBadge}</td>
           <td class="px-6 py-3.5">
-            <span class="inline-flex items-center gap-1.5">
+            <span class="inline-flex items-center gap-1.5 text-slate-300">
               <span class="w-2 h-2 rounded-full" style="background:${CATEGORY_COLORS[t.category] || '#94a3b8'}"></span>
               ${escapeHtml(t.category)}
             </span>
           </td>
-          <td class="px-6 py-3.5 text-slate-500 max-w-[160px] truncate" title="${escapeHtml(t.note)}">${escapeHtml(t.note) || '—'}</td>
+          <td class="px-6 py-3.5 text-slate-400 max-w-[160px] truncate" title="${escapeHtml(t.note)}">${escapeHtml(t.note) || '—'}</td>
           <td class="px-6 py-3.5 text-right font-medium ${amountClass} whitespace-nowrap">${amountPrefix}${formatCurrency(t.amount)}</td>
           <td class="px-6 py-3.5 text-center">
-            <button data-id="${t.id}" class="delete-btn text-slate-400 hover:text-rose-600 transition-colors p-1 rounded" title="Smazat">
+            <button data-id="${t.id}" class="delete-btn text-slate-500 hover:text-rose-400 transition-colors p-1 rounded" title="Smazat">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
               </svg>
