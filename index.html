@@ -616,6 +616,7 @@
 
     function deleteTransaction(id) {
       if (!confirm('Opravdu chcete smazat tuto transakci?')) return;
+      skipNextSync = true;
       transactions = transactions.filter(t => t.id !== id);
       saveTransactions();
       render();
