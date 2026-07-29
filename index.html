@@ -118,6 +118,22 @@
               Přidat transakci
             </button>
           </form>
+
+          <div class="mt-6 pt-6 border-t border-slate-700 space-y-3">
+            <div>
+              <label for="statement-name" class="block text-sm font-medium text-slate-300 mb-1">
+                Vaše jméno na výpisu
+              </label>
+              <input type="text" id="statement-name" placeholder="např. Adam Lang"
+                class="w-full rounded-lg border border-slate-600 bg-slate-700 text-slate-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-slate-500">
+              <p class="text-xs text-slate-500 mt-1">Používá se při CSV importu k rozpoznání převodů mezi vlastními účty.</p>
+            </div>
+            <button type="button" id="csv-upload-btn"
+              class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
+              Nahrát CSV výpis
+            </button>
+            <input type="file" id="csv-input" accept=".csv,text/csv" class="hidden">
+          </div>
         </section>
 
         <!-- OneDrive synchronizace -->
@@ -354,6 +370,9 @@
     const monthlyCategoryChartEl = document.getElementById('monthly-category-chart');
     const exportBtn = document.getElementById('export-btn');
     const importInput = document.getElementById('import-input');
+    const statementNameInput = document.getElementById('statement-name');
+    const csvUploadBtn = document.getElementById('csv-upload-btn');
+    const csvInput = document.getElementById('csv-input');
 
     const CATEGORY_OPTIONS = {
       income: ['Plat', 'Ostatní'],
@@ -1219,9 +1238,14 @@
       e.target.value = '';
     });
 
+    statementNameInput.addEventListener('blur', () => {
+      localStorage.setItem(STATEMENT_NAME_KEY, statementNameInput.value.trim());
+    });
+
     async function init() {
       loadTransactions();
       setDefaultDate();
+      statementNameInput.value = getStatementName();
       render();
 
       if (getClientId() && isHttpsAvailable()) {
