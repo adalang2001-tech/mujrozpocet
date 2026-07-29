@@ -708,20 +708,26 @@
         const iso = csvDateToIso(row['Datum provedení']);
         const amount = parseCsvAmount(row['Zaúčtovaná částka']);
 
-        if (!iso || Number.isNaN(amount)) {
+        if (!iso || Number.isNaN(amount) || amount === 0) {
           unparsedCount++;
           continue;
         }
 
         const merchant = (row['Název obchodníka'] || '').trim();
         const message = (row['Zpráva'] || row['Poznámka'] || '').trim();
-        const { category, confidence } = categorizeTransaction(merchant, message);
+        const type = amount < 0 ? 'expense' : 'income';
+        let { category, confidence } = categorizeTransaction(merchant, message);
+
+        if (!CATEGORY_OPTIONS[type].includes(category)) {
+          category = 'Ostatní';
+          confidence = 'low';
+        }
 
         candidates.push({
           externalId: (row['Id transakce'] || '').trim(),
           date: iso,
           amount: Math.abs(amount),
-          type: amount < 0 ? 'expense' : 'income',
+          type,
           merchant,
           note: merchant || message,
           category,
