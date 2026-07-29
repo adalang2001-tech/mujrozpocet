@@ -799,7 +799,7 @@
               <input type="checkbox" class="import-row-checkbox" data-index="${index}" ${row.checked ? 'checked' : ''}>
             </td>
             <td class="py-2 pr-2 whitespace-nowrap text-slate-300">${formatDate(row.date)}</td>
-            <td class="py-2 pr-2 text-slate-300 max-w-[200px] truncate" title="${escapeHtml(row.note)}">${escapeHtml(row.note) || '—'}</td>
+            <td class="import-row-note py-2 pr-2 text-slate-300 max-w-[200px] truncate" data-index="${index}">${escapeHtml(row.note) || '—'}</td>
             <td class="py-2 pr-2 text-right font-medium ${amountClass} whitespace-nowrap">${amountPrefix}${formatCurrency(row.amount)}</td>
             <td class="py-2 pr-2">
               <select class="import-row-category bg-slate-700 border border-slate-600 text-slate-100 text-xs rounded px-2 py-1" data-index="${index}">
@@ -819,6 +819,9 @@
         sel.addEventListener('change', () => {
           pendingImportRows[Number(sel.dataset.index)].category = sel.value;
         });
+      });
+      document.querySelectorAll('.import-row-note').forEach(td => {
+        td.title = pendingImportRows[Number(td.dataset.index)].note;
       });
     }
 
