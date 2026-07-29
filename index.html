@@ -375,23 +375,28 @@
       'lékárna': 'Zdraví', 'lekarna': 'Zdraví', 'nemocnice': 'Zdraví',
     };
 
+    function containsKeyword(text, keyword) {
+      const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`(?:^|\\W)${escaped}(?:$|\\W)`, 'i').test(text);
+    }
+
     function categorizeTransaction(merchant, note) {
       const merchantLower = (merchant || '').toLowerCase();
       const noteLower = (note || '').toLowerCase();
 
-      if (merchantLower.includes('atm') || noteLower.includes('atm') ||
-          merchantLower.includes('výběr hotovosti') || noteLower.includes('výběr hotovosti')) {
+      if (containsKeyword(merchantLower, 'atm') || containsKeyword(noteLower, 'atm') ||
+          containsKeyword(merchantLower, 'výběr hotovosti') || containsKeyword(noteLower, 'výběr hotovosti')) {
         return { category: 'Ostatní', confidence: 'low' };
       }
 
       for (const [keyword, category] of Object.entries(MERCHANT_CATEGORY_MAP)) {
-        if (merchantLower.includes(keyword)) {
+        if (containsKeyword(merchantLower, keyword)) {
           return { category, confidence: 'high' };
         }
       }
 
       for (const [keyword, category] of Object.entries(MERCHANT_CATEGORY_MAP)) {
-        if (noteLower.includes(keyword)) {
+        if (containsKeyword(noteLower, keyword)) {
           return { category, confidence: 'low' };
         }
       }
