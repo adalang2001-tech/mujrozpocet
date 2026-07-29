@@ -319,6 +319,7 @@
     const CLIENT_ID_KEY = 'muj-rozpocet-azure-client-id';
     const LAST_SYNC_KEY = 'muj-rozpocet-last-sync';
     const LOCAL_UPDATED_KEY = 'muj-rozpocet-local-updated';
+    const STATEMENT_NAME_KEY = 'muj-rozpocet-statement-name';
     const ONEDRIVE_PATH = 'MujRozpocet/rozpocet.json';
     const GRAPH_SCOPES = ['User.Read', 'Files.ReadWrite'];
 
@@ -669,6 +670,21 @@
       }
 
       return { candidates, unparsedCount };
+    }
+
+    function getStatementName() {
+      return localStorage.getItem(STATEMENT_NAME_KEY) || '';
+    }
+
+    function filterDuplicates(candidates, existingTransactions) {
+      const existingIds = new Set(existingTransactions.map(t => t.externalId).filter(Boolean));
+      const toImport = candidates.filter(c => !c.externalId || !existingIds.has(c.externalId));
+      return { toImport, duplicateCount: candidates.length - toImport.length };
+    }
+
+    function isInternalTransfer(candidate, statementName) {
+      if (!statementName) return false;
+      return candidate.counterpartyName.toLowerCase() === statementName.trim().toLowerCase();
     }
 
     function formatDateTime(iso) {
