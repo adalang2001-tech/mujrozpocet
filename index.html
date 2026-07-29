@@ -330,6 +330,40 @@
     Lokální cache v prohlížeči + automatická synchronizace do OneDrive po přihlášení.
   </footer>
 
+  <div id="import-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-lg max-w-4xl w-full max-h-[85vh] flex flex-col">
+      <div class="px-6 py-4 border-b border-slate-700">
+        <h2 class="text-lg font-semibold text-slate-100">Náhled importu</h2>
+        <p id="import-modal-summary" class="text-sm text-slate-400 mt-1"></p>
+      </div>
+      <div class="overflow-y-auto flex-1 px-6 py-4">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-slate-400 uppercase text-xs tracking-wide">
+              <th class="py-2 pr-2"></th>
+              <th class="py-2 pr-2">Datum</th>
+              <th class="py-2 pr-2">Obchodník / popis</th>
+              <th class="py-2 pr-2 text-right">Částka</th>
+              <th class="py-2 pr-2">Kategorie</th>
+              <th class="py-2 pr-2">Stav</th>
+            </tr>
+          </thead>
+          <tbody id="import-modal-body"></tbody>
+        </table>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-700 flex justify-end gap-3">
+        <button type="button" id="import-cancel-btn"
+          class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
+          Zrušit
+        </button>
+        <button type="button" id="import-confirm-btn"
+          class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm">
+          Potvrdit a uložit vše
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'muj-rozpocet-transactions';
     const CLIENT_ID_KEY = 'muj-rozpocet-azure-client-id';
@@ -373,6 +407,14 @@
     const statementNameInput = document.getElementById('statement-name');
     const csvUploadBtn = document.getElementById('csv-upload-btn');
     const csvInput = document.getElementById('csv-input');
+
+    const importModal = document.getElementById('import-modal');
+    const importModalBody = document.getElementById('import-modal-body');
+    const importModalSummary = document.getElementById('import-modal-summary');
+    const importCancelBtn = document.getElementById('import-cancel-btn');
+    const importConfirmBtn = document.getElementById('import-confirm-btn');
+
+    let pendingImportRows = [];
 
     const CATEGORY_OPTIONS = {
       income: ['Plat', 'Ostatní'],
@@ -689,6 +731,41 @@
       }
 
       return { candidates, unparsedCount };
+    }
+
+    function closeImportModal() {
+      importModal.classList.add('hidden');
+      pendingImportRows = [];
+    }
+
+    function openImportModal(csvText) {
+      let candidates, unparsedCount;
+      try {
+        ({ candidates, unparsedCount } = parseStatementCsv(csvText));
+      } catch (err) {
+        alert('Chyba při čtení CSV: ' + err.message);
+        return;
+      }
+
+      const { toImport, duplicateCount } = filterDuplicates(candidates, transactions);
+      const statementName = getStatementName();
+
+      pendingImportRows = toImport.map(c => ({
+        ...c,
+        checked: !isInternalTransfer(c, statementName),
+        isInternalTransfer: isInternalTransfer(c, statementName),
+      }));
+
+      const parts = [`${pendingImportRows.length} nových transakcí k importu`];
+      if (duplicateCount > 0) parts.push(`${duplicateCount} už bylo dříve naimportováno (přeskočeno)`);
+      if (unparsedCount > 0) parts.push(`${unparsedCount} řádků se nepodařilo přečíst`);
+      importModalSummary.textContent = parts.join(' · ');
+
+      if (pendingImportRows.length === 0) {
+        importModalBody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500">Žádné nové transakce k importu.</td></tr>';
+      }
+
+      importModal.classList.remove('hidden');
     }
 
     function getStatementName() {
@@ -1241,6 +1318,17 @@
     statementNameInput.addEventListener('blur', () => {
       localStorage.setItem(STATEMENT_NAME_KEY, statementNameInput.value.trim());
     });
+
+    csvUploadBtn.addEventListener('click', () => csvInput.click());
+    csvInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => openImportModal(ev.target.result);
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+    importCancelBtn.addEventListener('click', closeImportModal);
 
     async function init() {
       loadTransactions();
