@@ -358,6 +358,47 @@
       expense: ['Jídlo', 'Bydlení', 'Zábava', 'Doprava', 'Zdraví', 'Oblečení', 'Vzdělání', 'Investice', 'Ostatní'],
     };
 
+    const MERCHANT_CATEGORY_MAP = {
+      'lidl': 'Jídlo', 'billa': 'Jídlo', 'kaufland': 'Jídlo', 'tesco': 'Jídlo',
+      'penny': 'Jídlo', 'coop': 'Jídlo', 'minimarket': 'Jídlo',
+      'mcdonald': 'Jídlo', 'kfc': 'Jídlo', 'dráčik': 'Jídlo', 'dracik': 'Jídlo',
+      'mol': 'Doprava', 'orlen': 'Doprava', 'shell': 'Doprava', 'omv': 'Doprava',
+      'benzina': 'Doprava', 'easypark': 'Doprava', 'multipark': 'Doprava',
+      'parkovací dům': 'Doprava', 'parkovaci dum': 'Doprava',
+      'e.on': 'Bydlení', 'eon': 'Bydlení', 'čez': 'Bydlení', 'cez': 'Bydlení',
+      'pražská plynárenská': 'Bydlení', 'prazska plynarenska': 'Bydlení',
+      'google one': 'Zábava', 'youtube': 'Zábava', 'netflix': 'Zábava',
+      'spotify': 'Zábava', 'prime video': 'Zábava',
+      'decathlon': 'Oblečení', 'sportisimo': 'Oblečení',
+      'trading 212': 'Investice', 'trading212': 'Investice', 'revolut': 'Investice',
+      'xtb': 'Investice',
+      'lékárna': 'Zdraví', 'lekarna': 'Zdraví', 'nemocnice': 'Zdraví',
+    };
+
+    function categorizeTransaction(merchant, note) {
+      const merchantLower = (merchant || '').toLowerCase();
+      const noteLower = (note || '').toLowerCase();
+
+      if (merchantLower.includes('atm') || noteLower.includes('atm') ||
+          merchantLower.includes('výběr hotovosti') || noteLower.includes('výběr hotovosti')) {
+        return { category: 'Ostatní', confidence: 'low' };
+      }
+
+      for (const [keyword, category] of Object.entries(MERCHANT_CATEGORY_MAP)) {
+        if (merchantLower.includes(keyword)) {
+          return { category, confidence: 'high' };
+        }
+      }
+
+      for (const [keyword, category] of Object.entries(MERCHANT_CATEGORY_MAP)) {
+        if (noteLower.includes(keyword)) {
+          return { category, confidence: 'low' };
+        }
+      }
+
+      return { category: 'Ostatní', confidence: 'low' };
+    }
+
     function setTransactionType(type) {
       typeSelect.value = type;
       typeButtons.forEach(btn => {
