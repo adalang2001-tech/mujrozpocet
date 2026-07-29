@@ -1285,7 +1285,7 @@
               ${escapeHtml(t.category)}
             </span>
           </td>
-          <td class="px-6 py-3.5 text-slate-400 max-w-[160px] truncate" title="${escapeHtml(t.note)}">${escapeHtml(t.note) || '—'}</td>
+          <td class="px-6 py-3.5 text-slate-400 max-w-[160px] truncate tx-note-cell" data-id="${t.id}">${escapeHtml(t.note) || '—'}</td>
           <td class="px-6 py-3.5 text-right font-medium ${amountClass} whitespace-nowrap">${amountPrefix}${formatCurrency(t.amount)}</td>
           <td class="px-6 py-3.5 text-center">
             <button data-id="${t.id}" class="delete-btn text-slate-500 hover:text-rose-400 transition-colors p-1 rounded" title="Smazat">
@@ -1299,8 +1299,13 @@
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => deleteTransaction(btn.dataset.id));
       });
+      document.querySelectorAll('.tx-note-cell').forEach(td => {
+        const tx = transactions.find(t => t.id === td.dataset.id);
+        if (tx) td.title = tx.note;
+      });
       document.querySelectorAll('.category-cell').forEach(cell => {
         cell.addEventListener('click', () => {
+          if (cell.querySelector('select')) return;
           const id = cell.dataset.id;
           const type = cell.dataset.type;
           const current = transactions.find(t => t.id === id)?.category;
@@ -1319,6 +1324,7 @@
             }
           });
           select.addEventListener('blur', () => render());
+          select.addEventListener('click', e => e.stopPropagation());
           cell.innerHTML = '';
           cell.appendChild(select);
           select.focus();
