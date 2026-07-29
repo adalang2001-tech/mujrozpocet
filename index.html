@@ -1273,8 +1273,8 @@
         tr.innerHTML = `
           <td class="px-6 py-3.5 whitespace-nowrap text-slate-300">${formatDate(t.date)}</td>
           <td class="px-6 py-3.5">${typeBadge}</td>
-          <td class="px-6 py-3.5">
-            <span class="inline-flex items-center gap-1.5 text-slate-300">
+          <td class="px-6 py-3.5 category-cell" data-id="${t.id}" data-type="${t.type}">
+            <span class="category-display inline-flex items-center gap-1.5 text-slate-300 cursor-pointer hover:underline" title="Kliknutím změníte kategorii">
               <span class="w-2 h-2 rounded-full" style="background:${CATEGORY_COLORS[t.category] || '#94a3b8'}"></span>
               ${escapeHtml(t.category)}
             </span>
@@ -1292,6 +1292,31 @@
       }
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => deleteTransaction(btn.dataset.id));
+      });
+      document.querySelectorAll('.category-cell').forEach(cell => {
+        cell.addEventListener('click', () => {
+          const id = cell.dataset.id;
+          const type = cell.dataset.type;
+          const current = transactions.find(t => t.id === id)?.category;
+          const options = CATEGORY_OPTIONS[type] || CATEGORY_OPTIONS.expense;
+          const select = document.createElement('select');
+          select.className = 'bg-slate-700 border border-slate-600 text-slate-100 text-xs rounded px-2 py-1';
+          select.innerHTML = options.map(opt =>
+            `<option value="${opt}" ${opt === current ? 'selected' : ''}>${opt}</option>`
+          ).join('');
+          select.addEventListener('change', () => {
+            const tx = transactions.find(t => t.id === id);
+            if (tx) {
+              tx.category = select.value;
+              saveTransactions();
+              render();
+            }
+          });
+          select.addEventListener('blur', () => render());
+          cell.innerHTML = '';
+          cell.appendChild(select);
+          select.focus();
+        });
       });
     }
 
