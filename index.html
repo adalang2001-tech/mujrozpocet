@@ -186,23 +186,6 @@
           </div>
         </section>
 
-        <!-- Ruční záloha -->
-        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
-          <h2 class="text-lg font-semibold text-slate-100 mb-2">Ruční záloha</h2>
-          <p class="text-sm text-slate-400 mb-4">Export nebo import JSON souboru (záložní varianta).</p>
-          <div class="flex flex-col gap-3">
-            <button id="export-btn"
-              class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
-              Exportovat data (JSON)
-            </button>
-            <label class="w-full cursor-pointer">
-              <span class="block w-full text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
-                Importovat data
-              </span>
-              <input type="file" id="import-input" accept=".json,application/json" class="hidden">
-            </label>
-          </div>
-        </section>
       </div>
 
       <!-- Pravý sloupec -->
@@ -306,6 +289,24 @@
         </section>
       </div>
     </div>
+
+    <!-- Ruční záloha -->
+    <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 p-6">
+      <h2 class="text-lg font-semibold text-slate-100 mb-2">Ruční záloha</h2>
+      <p class="text-sm text-slate-400 mb-4">Export nebo import JSON souboru (záložní varianta).</p>
+      <div class="flex flex-col gap-3">
+        <button id="export-btn"
+          class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
+          Exportovat data (JSON)
+        </button>
+        <label class="w-full cursor-pointer">
+          <span class="block w-full text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm border border-slate-600">
+            Importovat data
+          </span>
+          <input type="file" id="import-input" accept=".json,application/json" class="hidden">
+        </label>
+      </div>
+    </section>
   </main>
 
   <footer class="max-w-6xl mx-auto px-4 py-6 text-center text-xs text-slate-500">
@@ -380,7 +381,7 @@
         button.textContent = category;
         button.dataset.category = category;
         button.className = category === selectedCategory
-          ? 'category-button rounded-lg border border-transparent bg-primary-500 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-400'
+          ? 'category-button rounded-lg border border-transparent bg-rose-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500'
           : 'category-button rounded-lg border border-slate-600 bg-slate-700 text-slate-300 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-600';
         button.addEventListener('click', () => setCategory(category));
         categoryButtonsContainer.appendChild(button);
@@ -392,7 +393,7 @@
       categoryButtonsContainer.querySelectorAll('.category-button').forEach(btn => {
         const isActive = btn.dataset.category === category;
         btn.className = isActive
-          ? 'category-button rounded-lg border border-transparent bg-primary-500 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-400'
+          ? 'category-button rounded-lg border border-transparent bg-rose-600 text-white px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500'
           : 'category-button rounded-lg border border-slate-600 bg-slate-700 text-slate-300 px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-slate-600';
       });
     }
