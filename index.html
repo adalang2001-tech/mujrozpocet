@@ -18,6 +18,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     [type="number"]::-webkit-inner-spin-button,
     [type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -623,6 +624,51 @@
       if (!match) return null;
       const [, d, m, y] = match;
       return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+
+    function parseStatementCsv(csvText) {
+      const parsed = Papa.parse(csvText, {
+        delimiter: ';',
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: h => h.trim(),
+      });
+
+      const fields = parsed.meta?.fields || [];
+      if (!fields.includes('Datum provedení') || !fields.includes('Zaúčtovaná částka')) {
+        throw new Error('Soubor neobsahuje očekávané sloupce (Datum provedení, Zaúčtovaná částka). Zkontrolujte, že jde o výpis ve správném formátu.');
+      }
+
+      const candidates = [];
+      let unparsedCount = 0;
+
+      for (const row of parsed.data) {
+        const iso = csvDateToIso(row['Datum provedení']);
+        const amount = parseCsvAmount(row['Zaúčtovaná částka']);
+
+        if (!iso || Number.isNaN(amount)) {
+          unparsedCount++;
+          continue;
+        }
+
+        const merchant = (row['Název obchodníka'] || '').trim();
+        const message = (row['Zpráva'] || row['Poznámka'] || '').trim();
+        const { category, confidence } = categorizeTransaction(merchant, message);
+
+        candidates.push({
+          externalId: (row['Id transakce'] || '').trim(),
+          date: iso,
+          amount: Math.abs(amount),
+          type: amount < 0 ? 'expense' : 'income',
+          merchant,
+          note: merchant || message,
+          category,
+          confidence,
+          counterpartyName: (row['Název protiúčtu'] || '').trim(),
+        });
+      }
+
+      return { candidates, unparsedCount };
     }
 
     function formatDateTime(iso) {
