@@ -1153,7 +1153,7 @@ Repeat Step 3's file injection with the identical CSV content, then check the su
 document.getElementById('import-modal-summary').textContent
 ```
 
-Expected: contains `"0 nových transakcí"` and `"4 už bylo dříve naimportováno"` (the 4 previously-saved rows are recognized; the 1 unchecked transfer was never saved so it isn't a "duplicate" — it will show up again as a fresh candidate available to import if desired).
+Expected: contains `"1 nových transakcí"` and `"4 už bylo dříve naimportováno"` (the 4 previously-saved rows are recognized as duplicates by `externalId`; the 1 unchecked transfer was never saved in Step 5, so it isn't a "duplicate" and correctly resurfaces as 1 new candidate — dedup is keyed purely on `externalId` presence in saved transactions, independent of the `checked`/transfer flags).
 
 - [ ] **Step 7: Verify inline category edit works on an imported row**
 
