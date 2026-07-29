@@ -763,9 +763,63 @@
 
       if (pendingImportRows.length === 0) {
         importModalBody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500">Žádné nové transakce k importu.</td></tr>';
+      } else {
+        renderImportModalRows();
       }
 
       importModal.classList.remove('hidden');
+    }
+
+    function renderImportModalRows() {
+      if (pendingImportRows.length === 0) return;
+
+      importModalBody.innerHTML = pendingImportRows.map((row, index) => {
+        const options = CATEGORY_OPTIONS[row.type] || CATEGORY_OPTIONS.expense;
+        const optionsHtml = options.map(opt =>
+          `<option value="${opt}" ${opt === row.category ? 'selected' : ''}>${opt}</option>`
+        ).join('');
+
+        const amountClass = row.type === 'income' ? 'text-emerald-400' : 'text-rose-400';
+        const amountPrefix = row.type === 'income' ? '+' : '−';
+
+        let statusBadge = '';
+        if (row.isInternalTransfer) {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-sky-900 text-sky-300">Interní převod</span>';
+        } else if (row.confidence === 'low') {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-900 text-amber-200">Zkontrolovat</span>';
+        }
+
+        const rowClass = row.confidence === 'low' && !row.isInternalTransfer
+          ? 'border-t border-amber-700'
+          : 'border-t border-slate-700';
+
+        return `
+          <tr class="${rowClass}">
+            <td class="py-2 pr-2">
+              <input type="checkbox" class="import-row-checkbox" data-index="${index}" ${row.checked ? 'checked' : ''}>
+            </td>
+            <td class="py-2 pr-2 whitespace-nowrap text-slate-300">${formatDate(row.date)}</td>
+            <td class="py-2 pr-2 text-slate-300 max-w-[200px] truncate" title="${escapeHtml(row.note)}">${escapeHtml(row.note) || '—'}</td>
+            <td class="py-2 pr-2 text-right font-medium ${amountClass} whitespace-nowrap">${amountPrefix}${formatCurrency(row.amount)}</td>
+            <td class="py-2 pr-2">
+              <select class="import-row-category bg-slate-700 border border-slate-600 text-slate-100 text-xs rounded px-2 py-1" data-index="${index}">
+                ${optionsHtml}
+              </select>
+            </td>
+            <td class="py-2 pr-2">${statusBadge}</td>
+          </tr>`;
+      }).join('');
+
+      document.querySelectorAll('.import-row-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+          pendingImportRows[Number(cb.dataset.index)].checked = cb.checked;
+        });
+      });
+      document.querySelectorAll('.import-row-category').forEach(sel => {
+        sel.addEventListener('change', () => {
+          pendingImportRows[Number(sel.dataset.index)].category = sel.value;
+        });
+      });
     }
 
     function getStatementName() {
