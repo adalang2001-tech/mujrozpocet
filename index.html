@@ -825,6 +825,31 @@
       });
     }
 
+    function confirmImport() {
+      const toSave = pendingImportRows.filter(r => r.checked);
+
+      for (const row of toSave) {
+        transactions.unshift({
+          id: generateId(),
+          amount: row.amount,
+          type: row.type,
+          category: row.category,
+          date: row.date,
+          note: row.note,
+          externalId: row.externalId || undefined,
+        });
+      }
+
+      if (toSave.length > 0) {
+        saveTransactionsLocal();
+        scheduleOneDriveSync();
+        render();
+      }
+
+      alert(`Naimportováno ${toSave.length} transakcí.`);
+      closeImportModal();
+    }
+
     function getStatementName() {
       return localStorage.getItem(STATEMENT_NAME_KEY) || '';
     }
@@ -1386,6 +1411,7 @@
       e.target.value = '';
     });
     importCancelBtn.addEventListener('click', closeImportModal);
+    importConfirmBtn.addEventListener('click', confirmImport);
 
     async function init() {
       loadTransactions();
