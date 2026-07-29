@@ -565,6 +565,20 @@
       return `${parseInt(d)}. ${parseInt(m)}. ${y}`;
     }
 
+    function parseCsvAmount(raw) {
+      if (raw == null) return NaN;
+      const cleaned = String(raw).trim().replace(/\s/g, '').replace(',', '.');
+      return parseFloat(cleaned);
+    }
+
+    function csvDateToIso(raw) {
+      if (!raw) return null;
+      const match = String(raw).trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (!match) return null;
+      const [, d, m, y] = match;
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+
     function formatDateTime(iso) {
       if (!iso) return '';
       return new Date(iso).toLocaleString('cs-CZ');
